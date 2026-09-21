@@ -1,0 +1,3 @@
+query($login:String!){ organization(login:$login){ login name avatarUrl description url createdAt
+  membersWithRole{totalCount}
+  repositories(first:100, orderBy:{field:STARGAZERS,direction:DESC}){ totalCount nodes{ name url isPrivate isFork isArchived stargazerCount forkCount pushedAt description primaryLanguage{name color} languages(first:10){edges{size node{name color}}} } } } }

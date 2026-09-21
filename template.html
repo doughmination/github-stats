@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="GitHub stats for Clove Twilight (@doughmination) and their orgs, refreshed hourly.">
+<title>Doughmination on GitHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f6f5f9;--surface:#ffffff;--ink:#1c1827;--ink-2:#565069;--muted:#6f6982;--line:#e4e1ec;--line-2:#d2cddd;
+  --accent:#6a3fd3;--accent-soft:#eee8fc;--bar:#7a52dc;
+  --h0:#ebe8f1;--h1:#d3c6f6;--h2:#ad93ee;--h3:#8561e0;--h4:#5d33c4;
+  --tip-bg:#1c1827;--tip-ink:#f6f5f9;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --sans:"IBM Plex Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#121019;--surface:#1b1823;--ink:#f2effa;--ink-2:#bcb5cc;--muted:#9a93ab;--line:#2c2838;--line-2:#3b3649;
+  --accent:#a88cf3;--accent-soft:#2a2240;--bar:#9373ec;
+  --h0:#252131;--h1:#3b2e67;--h2:#5a41a6;--h3:#7e5ddd;--h4:#b9a2ff;
+  --tip-bg:#f2effa;--tip-ink:#1c1827;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121019;--surface:#1b1823;--ink:#f2effa;--ink-2:#bcb5cc;--muted:#9a93ab;--line:#2c2838;--line-2:#3b3649;
+  --accent:#a88cf3;--accent-soft:#2a2240;--bar:#9373ec;
+  --h0:#252131;--h1:#3b2e67;--h2:#5a41a6;--h3:#7e5ddd;--h4:#b9a2ff;
+  --tip-bg:#f2effa;--tip-ink:#1c1827;
+}
+*{box-sizing:border-box}
+
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1040px;margin:0 auto;padding:40px 20px 64px;display:grid;gap:40px}
+a{color:inherit}
+a:focus-visible,button:focus-visible,th:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+h1,h2{font-family:var(--display);font-weight:700;letter-spacing:-.01em;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,5vw,44px);line-height:1.05}
+h2{font-size:22px;line-height:1.2}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.label{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.sub{color:var(--ink-2);margin:4px 0 0;max-width:62ch}
+
+/* header */
+header{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+header img{width:76px;height:76px;border-radius:50%;border:1px solid var(--line-2);background:var(--surface)}
+header .who{flex:1;min-width:220px}
+header .handle{font-family:var(--mono);font-size:14px;color:var(--accent);text-decoration:none}
+header .handle:hover{text-decoration:underline}
+.asof{font-size:13px;color:var(--muted)}
+
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));border-block:1px solid var(--line)}
+.kpi{padding:16px 16px 18px 0;display:grid;gap:2px}
+.kpi+.kpi{padding-left:16px;border-left:1px solid var(--line)}
+.kpi b{font-family:var(--display);font-weight:500;font-size:34px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:var(--ink-2)}
+@media (max-width:620px){.kpi+.kpi{border-left:0;padding-left:0}.kpi{border-bottom:1px solid var(--line)}}
+
+section{display:grid;gap:16px}
+.head{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px}
+
+/* heatmap */
+.heat-scroll{overflow-x:auto;padding-bottom:4px}
+.heat{display:grid;grid-template-columns:28px auto;gap:6px 6px;width:max-content}
+.months{grid-column:2;display:grid;grid-auto-flow:column;grid-auto-columns:13px;gap:3px;font-size:11px;color:var(--muted);height:14px}
+.months span{white-space:nowrap}
+.wdays{display:grid;grid-template-rows:repeat(7,13px);gap:3px;font-size:11px;color:var(--muted);line-height:13px}
+.cells{display:grid;grid-template-rows:repeat(7,13px);grid-auto-flow:column;grid-auto-columns:13px;gap:3px}
+.cells i{border-radius:3px;background:var(--h0)}
+.cells i[data-l="1"]{background:var(--h1)}.cells i[data-l="2"]{background:var(--h2)}
+.cells i[data-l="3"]{background:var(--h3)}.cells i[data-l="4"]{background:var(--h4)}
+.cells i:hover{outline:2px solid var(--ink);outline-offset:1px}
+.heat-foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:13px;color:var(--ink-2)}
+.legend{display:flex;align-items:center;gap:3px;color:var(--muted);font-size:12px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.facts{display:flex;gap:24px;flex-wrap:wrap}
+.facts b{color:var(--ink);font-weight:600}
+
+/* bars */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.bars{display:grid;gap:10px;margin-top:14px}
+.bar{display:grid;grid-template-columns:minmax(90px,130px) 1fr auto;align-items:center;gap:12px;font-size:14px}
+.bar .track{height:12px;position:relative}
+.bar .fill{height:100%;background:var(--bar);border-radius:0 4px 4px 0;min-width:2px}
+.bar .v{font-family:var(--mono);font-size:13px;color:var(--ink-2);text-align:right;min-width:48px}
+.bar.other .fill{background:var(--line-2)}
+.note{font-size:13px;color:var(--muted);margin:12px 0 0}
+
+/* accounts */
+.accts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.acct{display:grid;gap:14px;align-content:start}
+.acct .top{display:flex;gap:10px;align-items:center;min-width:0}
+.acct img{width:36px;height:36px;border-radius:8px;border:1px solid var(--line)}
+.acct .nm{font-weight:600;overflow-wrap:anywhere;line-height:1.25}
+.acct .nm a{text-decoration:none}.acct .nm a:hover{text-decoration:underline}
+.pill{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:99px;background:var(--accent-soft);color:var(--accent)}
+.acct dl{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin:0}
+.acct dt{font-size:12px;color:var(--muted)}
+.acct dd{margin:0;font-family:var(--mono);font-size:18px;font-variant-numeric:tabular-nums}
+.acct dd small{display:block;font-family:var(--sans);font-size:12px;color:var(--muted)}
+.acct .langs{font-size:13px;color:var(--ink-2);border-top:1px solid var(--line);padding-top:12px}
+
+/* filters */
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chips button{font:500 13px var(--sans);color:var(--ink-2);background:var(--surface);border:1px solid var(--line-2);border-radius:99px;padding:5px 12px;cursor:pointer}
+.chips button:hover{border-color:var(--accent);color:var(--ink)}
+.chips button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+
+/* table */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover td{background:var(--bg)}
+th{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);white-space:nowrap;cursor:pointer;user-select:none}
+th[aria-sort="descending"]::after{content:" ↓";color:var(--accent)}
+th[aria-sort="ascending"]::after{content:" ↑";color:var(--accent)}
+td.r,th.r{text-align:right}
+td .rn{font-weight:600;text-decoration:none}td .rn:hover{text-decoration:underline}
+td .ds{display:block;color:var(--muted);font-size:13px;max-width:46ch}
+td .tag{font-size:11px;color:var(--muted);border:1px solid var(--line-2);border-radius:4px;padding:0 5px;margin-left:6px;white-space:nowrap}
+td.own{color:var(--ink-2);white-space:nowrap}
+
+#tip{position:fixed;pointer-events:none;background:var(--tip-bg);color:var(--tip-ink);font-size:12px;padding:6px 9px;border-radius:6px;white-space:nowrap;z-index:10;transform:translate(-50%,calc(-100% - 10px))}
+#tip b{font-family:var(--mono);font-weight:500}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <img id="avatar" alt="">
+    <div class="who">
+      <h1 id="name">Clove Twilight</h1>
+      <a class="handle" id="handle" href="#"></a>
+      <p class="sub" id="bio"></p>
+    </div>
+    <div class="asof" id="asof"></div>
+  </header>
+
+  <div class="kpis" id="kpis"></div>
+
+  <section>
+    <div class="head">
+      <div><h2>Last 12 months of contributions</h2><p class="sub" id="heatsub"></p></div>
+    </div>
+    <div class="panel">
+      <div class="heat-scroll"><div class="heat" id="heat"></div></div>
+      <div class="heat-foot">
+        <div class="facts" id="facts"></div>
+        <div class="legend">Less <i style="background:var(--h0)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i> More</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><div><h2>Accounts &amp; orgs</h2><p class="sub" id="acctsub"></p></div></div>
+    <div class="accts" id="accts"></div>
+  </section>
+
+  <section>
+    <div class="head">
+      <h2>Languages &amp; activity</h2>
+      <div class="chips" id="chips" role="group" aria-label="Filter by account"></div>
+    </div>
+    <div class="two">
+      <div class="panel">
+        <div class="label">Code by language</div>
+        <div class="bars" id="langs"></div>
+        <p class="note">Share of bytes across <span id="langn"></span>, the way GitHub's linguist counts it. Forks are left out.</p>
+      </div>
+      <div class="panel">
+        <div class="label">Contribution types, last 12 months</div>
+        <div class="bars" id="kinds"></div>
+        <p class="note" id="kindnote"></p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="head"><h2>Repositories</h2><p class="sub" id="repocount" style="margin:0"></p></div>
+    <div class="tbl">
+      <table>
+        <thead><tr>
+          <th data-k="name" tabindex="0">Repository</th>
+          <th data-k="owner" tabindex="0">Owner</th>
+          <th data-k="lang" tabindex="0">Language</th>
+          <th data-k="stars" class="r" tabindex="0" aria-sort="descending">Stars</th>
+          <th data-k="forks" class="r" tabindex="0">Forks</th>
+          <th data-k="pushed" class="r" tabindex="0">Last push</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+const D=/*DATA*/null;
+const $=id=>document.getElementById(id);
+const fmt=n=>n.toLocaleString('en-GB');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const U=D.user, C=U.contrib;
+const tip=$('tip');
+function showTip(e,html){tip.innerHTML=html;tip.hidden=false;tip.style.left=e.clientX+'px';tip.style.top=e.clientY+'px'}
+function hideTip(){tip.hidden=true}
+const dateFmt=(d,o)=>new Date(d+'T00:00:00Z').toLocaleDateString('en-GB',{timeZone:'UTC',...o});
+
+/* header */
+$('avatar').src=U.avatar;$('name').textContent=U.name;
+$('handle').textContent='@'+U.login;$('handle').href=U.url;
+$('bio').textContent=U.bio||'';
+$('asof').textContent='On GitHub since '+dateFmt(U.created.slice(0,10),{month:'long',year:'numeric'});
+
+/* kpis */
+const all=D.accounts.flatMap(a=>a.repos);
+const totalStars=all.reduce((s,r)=>s+r.stars,0);
+const repoTotal=D.accounts.reduce((s,a)=>s+a.repoTotal,0);
+$('kpis').innerHTML=[
+  [C.total,'contributions, last 12 months'],[C.commits,'commits'],[C.reviews,'PR reviews'],
+  [repoTotal,`repos across ${D.accounts.length} accounts`],[totalStars,'stars earned'],[U.followers,'followers']
+].map(([v,l])=>`<div class="kpi"><b>${fmt(v)}</b><span>${l}</span></div>`).join('');
+
+/* heatmap */
+const days=U.days, counts=days.map(d=>d[1]);
+const nz=counts.filter(c=>c>0).sort((a,b)=>a-b);
+const q=p=>nz[Math.min(nz.length-1,Math.floor(p*nz.length))];
+const cuts=[q(.25),q(.5),q(.75)];
+const lvl=c=>c===0?0:c<=cuts[0]?1:c<=cuts[1]?2:c<=cuts[2]?3:4;
+const firstDow=new Date(days[0][0]+'T00:00:00Z').getUTCDay();
+let cells='';
+for(let i=0;i<firstDow;i++)cells+='<i style="visibility:hidden"></i>';
+days.forEach(([d,c])=>cells+=`<i data-l="${lvl(c)}" data-d="${d}" data-c="${c}"></i>`);
+const weeks=Math.ceil((days.length+firstDow)/7);
+let months=[],last=-1;
+for(let w=0;w<weeks;w++){
+  const idx=Math.max(0,w*7-firstDow), m=+days[idx][0].slice(5,7);
+  months.push(m!==last&&w<weeks-2?`<span>${dateFmt(days[idx][0],{month:'short'})}</span>`:'<span></span>');last=m;
+}
+{const on=months.map((m,i)=>m!=='<span></span>'?i:-1).filter(i=>i>=0);if(on.length>1&&on[1]-on[0]<3)months[on[0]]='<span></span>';}
+$('heat').innerHTML=`<div class="months">${months.join('')}</div>
+  <div class="wdays"><span></span><span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span></div>
+  <div class="cells" id="cells" role="img" aria-label="Daily contribution calendar, ${fmt(C.total)} contributions in total">${cells}</div>`;
+$('cells').addEventListener('mousemove',e=>{
+  const t=e.target.closest('i[data-d]');if(!t)return hideTip();
+  const c=+t.dataset.c;
+  showTip(e,`<b>${c===0?'No':fmt(c)}</b> contribution${c===1?'':'s'} · ${dateFmt(t.dataset.d,{weekday:'short',day:'numeric',month:'short',year:'numeric'})}`);
+});
+$('cells').addEventListener('mouseleave',hideTip);
+
+let longest=0,run=0;counts.forEach(c=>{run=c>0?run+1:0;longest=Math.max(longest,run)});
+let cur=0;for(let i=counts.length-1;i>=0;i--){if(counts[i]>0)cur++;else if(i===counts.length-1)continue;else break}
+const best=days.reduce((a,b)=>b[1]>a[1]?b:a);
+const active=nz.length;
+$('heatsub').textContent=`${fmt(C.total)} contributions from ${dateFmt(days[0][0],{day:'numeric',month:'short',year:'numeric'})} to ${dateFmt(days.at(-1)[0],{day:'numeric',month:'short',year:'numeric'})}. ${fmt(C.private)} of them happened in private repos.`;
+$('facts').innerHTML=`<span>Active on <b class="num">${active}</b> of ${days.length} days</span>
+  <span>Longest streak <b class="num">${longest}</b> days</span>
+  <span>Current streak <b class="num">${cur}</b> days</span>
+  <span>Busiest day <b class="num">${best[1]}</b> on ${dateFmt(best[0],{day:'numeric',month:'short'})}</span>`;
+
+/* bars helper */
+function bars(el,items,unit){
+  const max=Math.max(...items.map(i=>i.v),1);
+  el.innerHTML=items.map(i=>`<div class="bar${i.other?' other':''}" data-t="${esc(i.tip)}">
+    <span>${esc(i.k)}</span><div class="track"><div class="fill" style="width:${(i.v/max*100).toFixed(2)}%"></div></div>
+    <span class="v">${i.label}</span></div>`).join('');
+}
+function hoverTips(el){
+  el.addEventListener('mousemove',e=>{const b=e.target.closest('.bar');b?showTip(e,b.dataset.t):hideTip()});
+  el.addEventListener('mouseleave',hideTip);
+}
+hoverTips($('langs'));hoverTips($('kinds'));
+
+bars($('kinds'),[
+  ['Commits',C.commits],['PR reviews',C.reviews],['Pull requests',C.prs],['Repos created',C.repos],['Issues',C.issues]
+].map(([k,v])=>({k,v,label:fmt(v),tip:`<b>${fmt(v)}</b> ${k.toLowerCase()}`})));
+$('kindnote').textContent=`Plus ${fmt(C.private)} private contributions that GitHub doesn't break down by type. All-time: ${fmt(U.prs)} pull requests and ${fmt(U.issues)} issues opened.`;
+const nOrgs=D.accounts.length-1;
+$('acctsub').textContent=`The personal account plus ${nOrgs} org${nOrgs===1?'':'s'}. Stars and forks are summed across every repo, private ones included.`;
+
+/* accounts */
+const kb=b=>b>=1e6?(b/1e6).toFixed(1)+' MB':b>=1e3?Math.round(b/1e3)+' KB':b+' B';
+function langTotals(repos){
+  const t={};repos.filter(r=>!r.fork).forEach(r=>Object.entries(r.langs).forEach(([k,v])=>t[k]=(t[k]||0)+v));
+  return Object.entries(t).sort((a,b)=>b[1]-a[1]);
+}
+$('accts').innerHTML=D.accounts.map(a=>{
+  const pub=a.repos.filter(r=>!r.private).length, priv=a.repos.length-pub;
+  const stars=a.repos.reduce((s,r)=>s+r.stars,0), forks=a.repos.reduce((s,r)=>s+r.forks,0);
+  const lt=langTotals(a.repos), sum=lt.reduce((s,x)=>s+x[1],0)||1;
+  const top=lt.slice(0,3).map(([k,v])=>`${esc(k)} ${Math.round(v/sum*100)}%`).join(' · ')||'No code yet';
+  return `<div class="panel acct">
+    <div class="top"><img src="${a.avatar}" alt=""><div><div class="nm"><a href="${a.url}" target="_blank" rel="noopener">${esc(a.name)}</a></div>
+      <span class="pill">${a.kind==='user'?'Personal':'Org'}</span></div></div>
+    <dl>
+      <div><dt>Repos</dt><dd>${a.repoTotal} <small>${priv?priv+' private':''}</small></dd></div>
+      <div><dt>${a.kind==='user'?'Followers':'Members'}</dt><dd>${a.kind==='user'?U.followers:a.members}</dd></div>
+      <div><dt>Stars</dt><dd>${stars}</dd></div>
+      <div><dt>Forks</dt><dd>${forks}</dd></div>
+    </dl>
+    <div class="langs">${top}</div>
+  </div>`}).join('');
+
+/* filter + languages + table */
+let scope='all', sortK='stars', sortDir=-1;
+function scoped(){return scope==='all'?all:all.filter(r=>r.owner===scope)}
+$('chips').innerHTML=[['all','All accounts'],...D.accounts.map(a=>[a.login,a.login])]
+  .map(([v,l])=>`<button type="button" id="chip-${esc(v)}" data-v="${esc(v)}" aria-pressed="${v===scope}">${esc(l)}</button>`).join('');
+$('chips').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  scope=b.dataset.v;[...$('chips').children].forEach(x=>x.setAttribute('aria-pressed',x===b));
+  try{localStorage.setItem('scope',scope)}catch(_){}
+  render();
+});
+try{const s=localStorage.getItem('scope');if(s&&(s==='all'||D.accounts.some(a=>a.login===s))){scope=s;[...$('chips').children].forEach(x=>x.setAttribute('aria-pressed',x.dataset.v===s))}}catch(_){}
+
+function render(){
+  const rs=scoped(), lt=langTotals(rs), sum=lt.reduce((s,x)=>s+x[1],0)||1;
+  const top=lt.slice(0,8).map(([k,v])=>({k,v,label:(v/sum*100).toFixed(1)+'%',tip:`<b>${esc(k)}</b> · ${kb(v)}`}));
+  const rest=lt.slice(8).reduce((s,x)=>s+x[1],0);
+  if(rest)top.push({k:`Other (${lt.length-8})`,v:rest,other:true,label:(rest/sum*100).toFixed(1)+'%',tip:`<b>${lt.slice(8).map(x=>esc(x[0])).join(', ')}</b> · ${kb(rest)}`});
+  top.length?bars($('langs'),top):($('langs').innerHTML='<p class="note">No code in these repos yet.</p>');
+  const n=rs.filter(r=>!r.fork).length;
+  $('langn').textContent=`${n} repo${n===1?'':'s'} (${kb(sum)})`;
+
+  const pub=rs.filter(r=>!r.private), priv=rs.length-pub.length;
+  const val=r=>sortK==='pushed'?r.pushed:sortK==='stars'||sortK==='forks'?r[sortK]:(r[sortK]||'').toLowerCase();
+  pub.sort((a,b)=>{const x=val(a),y=val(b);return (x<y?-1:x>y?1:0)*sortDir||b.stars-a.stars||(b.pushed>a.pushed?1:-1)});
+  const now=Date.now();
+  const ago=iso=>{const d=Math.floor((now-new Date(iso))/864e5);return d<1?'today':d<2?'yesterday':d<45?d+' days ago':d<540?Math.round(d/30.4)+' months ago':(d/365).toFixed(1)+' years ago'};
+  $('rows').innerHTML=pub.map(r=>`<tr>
+    <td><a class="rn" href="${r.url}" target="_blank" rel="noopener">${esc(r.name)}</a>${r.fork?'<span class="tag">fork</span>':''}${r.archived?'<span class="tag">archived</span>':''}${r.desc?`<span class="ds">${esc(r.desc)}</span>`:''}</td>
+    <td class="own">${esc(r.owner)}</td><td>${esc(r.lang||'—')}</td>
+    <td class="r num">${r.stars}</td><td class="r num">${r.forks}</td>
+    <td class="r" title="${esc(r.pushed.slice(0,10))}">${ago(r.pushed)}</td></tr>`).join('');
+  $('repocount').textContent=`${pub.length} public repo${pub.length===1?'':'s'}${priv?` · ${priv} private not listed`:''}`;
+}
+document.querySelectorAll('th[data-k]').forEach(th=>{
+  const go=()=>{const k=th.dataset.k;
+    sortDir=k===sortK?-sortDir:(['stars','forks','pushed'].includes(k)?-1:1);sortK=k;
+    document.querySelectorAll('th[data-k]').forEach(x=>x.removeAttribute('aria-sort'));
+    th.setAttribute('aria-sort',sortDir<0?'descending':'ascending');render()};
+  th.addEventListener('click',go);th.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+});
+render();
+const upd=new Date(D.updated);
+$('foot').textContent=`Stats last changed ${upd.toLocaleString('en-GB',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',timeZoneName:'short'})}. Checked hourly. Private repos count toward the totals, but their names are left off this page.`;
+</script>
+</body>
+</html>

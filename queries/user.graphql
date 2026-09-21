@@ -1,0 +1,7 @@
+query($login:String!){ user(login:$login){ login name avatarUrl bio createdAt url
+  followers{totalCount} following{totalCount}
+  pullRequests{totalCount} issues{totalCount}
+  starredRepositories{totalCount}
+  contributionsCollection{ totalCommitContributions totalPullRequestContributions totalIssueContributions totalPullRequestReviewContributions totalRepositoryContributions restrictedContributionsCount
+    contributionCalendar{ totalContributions weeks{ contributionDays{ date contributionCount } } } }
+  repositories(first:100, ownerAffiliations:OWNER, orderBy:{field:STARGAZERS,direction:DESC}){ totalCount nodes{ name url isPrivate isFork isArchived stargazerCount forkCount pushedAt description primaryLanguage{name color} languages(first:10){edges{size node{name color}}} } } } }

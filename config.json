@@ -1,0 +1,5 @@
+{
+  "user": "doughmination",
+  "orgs": ["Clove-Archives", "jpcl-lang", "WLWDevs"],
+  "exclude_repos": ["doughmination/github-stats"]
+}
