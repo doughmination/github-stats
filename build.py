@@ -14,7 +14,10 @@ exclude = {s.lower() for s in cfg.get('exclude_repos', [])}
 def gql(query_file, login, out_file):
     res = subprocess.run(['gh', 'api', 'graphql', '-F', f'login={login}',
                           '-F', f'query=@{os.path.join(ROOT, "queries", query_file)}'],
-                         capture_output=True, check=True)
+                         capture_output=True)
+    if res.returncode:
+        hint = ' (is the STATS_TOKEN secret set?)' if res.returncode == 4 else ''
+        sys.exit(f'gh failed for {login}{hint}: {res.stderr.decode().strip()}')
     body = json.loads(res.stdout)
     if body.get('errors'):
         sys.exit(f'GitHub API error for {login}: {body["errors"]}')
